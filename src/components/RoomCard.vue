@@ -1,6 +1,6 @@
 <template>
   <div class="room">
-    <img :src="`https://picsum.photos/300/200/?random=${random}`">
+    <img :src="`https://picsum.photos/300/200/?random=${random}`" />
     <div class="room-information">
       <div class="name">
         <p>Single Room</p>
@@ -16,8 +16,8 @@
 
 <script>
 export default {
-  props: ["random"]
-}
+  props: ["random"],
+};
 </script>
 
 <style lang="scss" scoped>
@@ -30,7 +30,7 @@ export default {
   background-color: #f7f7f7;
   text-align: center;
   transform: translateY(-80px);
-  box-shadow: 2px 2px 9px 0 rgba(0,0,0,0.18);
+  box-shadow: 2px 2px 9px 0 rgba(0, 0, 0, 0.18);
   cursor: pointer;
 
   @media (min-width: 576px) {
@@ -53,7 +53,7 @@ export default {
   left: 0;
   background-color: #f7f7f7;
   transform: translateY(48px);
-  transition: transform .4s;
+  transition: transform 0.4s;
 
   &:hover {
     transform: translateY(0);
@@ -62,27 +62,28 @@ export default {
     }
   }
 
-  .name, .price {
+  .name,
+  .price {
     padding: 15px 20px;
     text-align: left;
   }
 
   .name {
     font-size: 14px;
-  } 
+  }
 
   .name p:last-child {
-    transition: opacity .4s;
+    transition: opacity 0.4s;
     opacity: 1;
     font-size: 12px;
-    color: #6D7278;
+    color: #6d7278;
   }
 
   .price {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    color: #6D7278;
+    color: #6d7278;
     font-size: 12px;
     p {
       span {

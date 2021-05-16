@@ -7,7 +7,10 @@
         <p>{{ englishTranslation(room.name) }}</p>
       </div>
       <div class="price">
-        <p><span>NT.{{ room.normalDayPrice }}</span>平日</p>
+        <p>
+          <span>NT.{{ room.normalDayPrice }}</span
+          >平日
+        </p>
         <p>NT.{{ room.holidayPrice }} 假日</p>
       </div>
     </div>
@@ -18,8 +21,8 @@
 export default {
   props: {
     room: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   methods: {
     englishTranslation(name) {
@@ -32,8 +35,8 @@ export default {
         "Deluxe Twin Room": "豪華四人房",
       };
       return chineseNames[name];
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -1,7 +1,11 @@
 <template>
   <div class="home-container">
+    <Loading
+      :isLoading="pageLoadingConfig.isLoading"
+      :fullPage="pageLoadingConfig.fullPage"
+    />
     <div class="carousel">
-      <Carousel />
+      <Carousel :rooms="rooms" />
       <div class="home-information">
         <div class="logo">
           <img src="@/assets/images/logo_white.svg" alt="logo" />
@@ -59,19 +63,36 @@
 import { mapGetters } from "vuex";
 import RoomCard from "@/components/RoomCard.vue";
 import Carousel from "@/components/Carousel.vue";
+import Loading from "@/components/Loading.vue";
 
 export default {
   name: "Home",
   components: {
     RoomCard,
     Carousel,
+    Loading,
   },
   computed: {
-    ...mapGetters(["rooms"])
+    ...mapGetters(["rooms", "pageLoadingConfig"]),
   },
-  async created() {
-    await this.$store.dispatch("fetchRooms");
-  }
+  methods: {
+    async fetchRooms() {
+      this.$store.commit("UPDATE_PAGE_LOADING_CONFIG", {
+        isLoading: true,
+        fullPage: true,
+      });
+
+      await this.$store.dispatch("fetchRooms");
+
+      this.$store.commit("UPDATE_PAGE_LOADING_CONFIG", {
+        isLoading: false,
+        fullPage: true,
+      });
+    },
+  },
+  created() {
+    this.fetchRooms();
+  },
 };
 </script>
 
@@ -81,14 +102,27 @@ export default {
   height: 660px;
   background-color: #ddd;
   position: relative;
+
+  &::after {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 }
 
 .home-information {
   position: absolute;
   z-index: 2;
-  top: 50%;
+  top: 45%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -45%);
 
   .logo {
     width: 148px;

@@ -50,20 +50,28 @@
       </div>
     </div>
     <div class="rooms">
-      <RoomCard v-for="(item, index) in 6" :random="index" :key="index" />
+      <RoomCard v-for="room in rooms" :room="room" :key="room.id" />
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import RoomCard from "@/components/RoomCard.vue";
 import Carousel from "@/components/Carousel.vue";
 
 export default {
+  name: "Home",
   components: {
     RoomCard,
     Carousel,
   },
+  computed: {
+    ...mapGetters(["rooms"])
+  },
+  async created() {
+    await this.$store.dispatch("fetchRooms");
+  }
 };
 </script>
 

@@ -1,14 +1,14 @@
 <template>
   <div class="room">
-    <img :src="`https://picsum.photos/300/200/?random=${random}`" />
+    <img :src="room.imageUrl" />
     <div class="room-information">
       <div class="name">
-        <p>Single Room</p>
-        <p>單人房</p>
+        <p>{{ room.name }}</p>
+        <p>{{ englishTranslation(room.name) }}</p>
       </div>
       <div class="price">
-        <p><span>NT.2460</span>平日</p>
-        <p>NT.2500 假日</p>
+        <p><span>NT.{{ room.normalDayPrice }}</span>平日</p>
+        <p>NT.{{ room.holidayPrice }} 假日</p>
       </div>
     </div>
   </div>
@@ -16,7 +16,24 @@
 
 <script>
 export default {
-  props: ["random"],
+  props: {
+    room: {
+      type: Object
+    }
+  },
+  methods: {
+    englishTranslation(name) {
+      const chineseNames = {
+        "Single Room": "單人房",
+        "Deluxe Single Room": "豪華單人房",
+        "Double Room": "雙人房",
+        "Deluxe Double Room": "豪華雙人房",
+        "Twin Room": "四人房",
+        "Deluxe Twin Room": "豪華四人房",
+      };
+      return chineseNames[name];
+    }
+  }
 };
 </script>
 
@@ -71,13 +88,16 @@ export default {
 
   .name {
     font-size: 14px;
+    position: relative;
   }
 
   .name p:last-child {
     transition: opacity 0.4s;
-    opacity: 1;
+    opacity: 0;
     font-size: 12px;
     color: #6d7278;
+    position: absolute;
+    bottom: 0;
   }
 
   .price {

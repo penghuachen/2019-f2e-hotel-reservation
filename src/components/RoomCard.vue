@@ -24,6 +24,7 @@ export default {
 .room {
   overflow: hidden;
   position: relative;
+  z-index: 2;
   margin: 0 2% 50px;
   width: 94%;
   height: 400px;

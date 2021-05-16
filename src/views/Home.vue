@@ -1,6 +1,7 @@
 <template>
   <div class="home-container">
     <div class="carousel">
+      <Carousel />
       <div class="home-information">
         <div class="logo">
           <img src="@/assets/images/logo_white.svg" alt="logo" />
@@ -56,10 +57,12 @@
 
 <script>
 import RoomCard from "@/components/RoomCard.vue";
+import Carousel from "@/components/Carousel.vue";
 
 export default {
   components: {
     RoomCard,
+    Carousel,
   },
 };
 </script>
@@ -74,6 +77,7 @@ export default {
 
 .home-information {
   position: absolute;
+  z-index: 2;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

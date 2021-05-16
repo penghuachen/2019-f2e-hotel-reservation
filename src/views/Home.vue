@@ -8,15 +8,15 @@
         </div>
         <div class="information">
           <div class="social-medias">
-            <span class="icon">
+            <a href="#" class="icon">
               <img src="@/assets/images/instagram-brands.svg" alt="instagram" />
-            </span>
-            <span class="icon">
+            </a>
+            <a href="#" class="icon">
               <img
                 src="@/assets/images/facebook-square-brands.svg"
                 alt="facebook"
               />
-            </span>
+            </a>
           </div>
           <div class="contact">
             <ul>
@@ -125,6 +125,7 @@ export default {
 
       .icon {
         width: 25px;
+        cursor: pointer;
       }
     }
 

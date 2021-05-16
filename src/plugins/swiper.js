@@ -17,7 +17,7 @@ import "swiper/swiper-bundle.css";
 export function initializeSwiper() {
   new Swiper(".swiper-container", {
     autoplay: {
-      delay: 6000,
+      delay: 5000,
     },
     slidesPerView: 1,
     loop: true,

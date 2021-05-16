@@ -1,19 +1,21 @@
 <template>
   <div class="room">
-    <img :src="room.imageUrl" />
-    <div class="room-information">
-      <div class="name">
-        <p>{{ room.name }}</p>
-        <p>{{ englishTranslation(room.name) }}</p>
+    <router-link :to="{ name: 'Room', params: { id: room.id } }">
+      <img :src="room.imageUrl" />
+      <div class="room-information">
+        <div class="name">
+          <p>{{ room.name }}</p>
+          <p>{{ englishTranslation(room.name) }}</p>
+        </div>
+        <div class="price">
+          <p>
+            <span>NT.{{ room.normalDayPrice }}</span
+            >平日
+          </p>
+          <p>NT.{{ room.holidayPrice }} 假日</p>
+        </div>
       </div>
-      <div class="price">
-        <p>
-          <span>NT.{{ room.normalDayPrice }}</span
-          >平日
-        </p>
-        <p>NT.{{ room.holidayPrice }} 假日</p>
-      </div>
-    </div>
+    </router-link>
   </div>
 </template>
 
@@ -90,6 +92,7 @@ export default {
   }
 
   .name {
+    color: #000000;
     font-size: 14px;
     position: relative;
   }

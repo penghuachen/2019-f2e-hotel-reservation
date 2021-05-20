@@ -7,9 +7,11 @@
     <div class="carousel">
       <Carousel :rooms="rooms" />
       <div class="home-information">
-        <div class="logo">
-          <img src="@/assets/images/logo_white.svg" alt="logo" />
-        </div>
+        <h1 class="logo">
+          <a href="#">
+            <img src="@/assets/images/logo_white.svg" alt="logo" />
+          </a>
+        </h1>
         <div class="information">
           <div class="social-medias">
             <a href="#" class="icon">
@@ -128,6 +130,10 @@ export default {
     width: 148px;
     height: 148px;
     margin: 0 auto 50px;
+    
+    a {
+      display: inline-block;
+    }
   }
 
   .information {

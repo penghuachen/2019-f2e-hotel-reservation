@@ -1,20 +1,39 @@
 <template>
   <div class="each-room-container">
+    <Loading
+      :isLoading="pageLoadingConfig.isLoading"
+      :fullPage="pageLoadingConfig.fullPage"
+    />
     <h2 class="logo">
       <a href="#">
-        <img src="@/assets/images/inner-page-logo.svg" alt="logo">
+        <img src="@/assets/images/inner-page-logo.svg" alt="logo" />
       </a>
     </h2>
     <div class="room-photos">
-      <div class="main-photo">
-        <img src="https://picsum.photos/1000/600/?random=1" />
+      <div class="light-box" @click.prevent="toggler = !toggler">
+        <div class="main-photo">
+          <img src="https://picsum.photos/1000/600/?random=1" />
+        </div>
+        <div class="sub-photo">
+          <img src="https://picsum.photos/500/300/?random=2" />
+        </div>
+        <div class="sub-photo">
+          <img src="https://picsum.photos/500/300/?random=3" />
+        </div>
       </div>
-      <div class="sub-photo">
-        <img src="https://picsum.photos/500/300/?random=2" />
+      <div class="carousel" @click.prevent="toggler = !toggler">
+        <Carousel
+          :rooms="[{ imageUrl: 'https://picsum.photos/500/400/?random=3' }]"
+        />
       </div>
-      <div class="sub-photo">
-        <img src="https://picsum.photos/500/300/?random=3" />
-      </div>
+      <FsLightbox
+        :toggler="toggler"
+        :sources="[
+          'https://picsum.photos/1000/600/?random=1',
+          'https://picsum.photos/1000/600/?random=2',
+          'https://picsum.photos/1000/600/?random=3',
+        ]"
+      />
     </div>
     <div class="each-room-details">
       <div class="introduction">
@@ -49,12 +68,12 @@
           </div>
         </div>
         <div class="utilites">
-          <div 
-            v-for="utility in utilites" 
+          <div
+            v-for="utility in utilites"
             :key="utility.id"
-            class="utility" 
+            class="utility"
             :class="{ 'enabled-utility': utility.enabled }"
-            >
+          >
             <SvgIcon :iconName="utility.iconName" />
             <span>{{ utility.name }}</span>
           </div>
@@ -66,87 +85,119 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import FsLightbox from "fslightbox-vue";
+import Carousel from "@/components/Carousel.vue";
+import Loading from "@/components/Loading.vue";
+
 export default {
+  components: {
+    FsLightbox,
+    Carousel,
+    Loading,
+  },
   data() {
     return {
+      toggler: false,
       // 後續寫入 getter, mapping api data
       utilites: [
         {
           id: 1,
           iconName: "wifi",
           name: "Wi-Fi",
-          enabled: false
+          enabled: false,
         },
         {
           id: 2,
           iconName: "phone",
           name: "電話",
-          enabled: false
+          enabled: false,
         },
         {
           id: 3,
           iconName: "mountain-range",
           name: "漂亮的視野",
-          enabled: false
+          enabled: false,
         },
         {
           id: 4,
           iconName: "breakfast",
           name: "早餐",
-          enabled: false
+          enabled: false,
         },
         {
           id: 5,
           iconName: "breeze",
           name: "空調",
-          enabled: false
+          enabled: false,
         },
         {
           id: 6,
           iconName: "no-smoke-symbol",
           name: "禁止吸煙",
-          enabled: false
+          enabled: false,
         },
         {
           id: 7,
           iconName: "bar",
           name: "Mini Bar",
-          enabled: false
+          enabled: false,
         },
         {
           id: 8,
           iconName: "refrigerator",
           name: "冰箱",
-          enabled: false
+          enabled: false,
         },
         {
           id: 9,
           iconName: "crawling-baby-silhouette",
           name: "適合兒童",
-          enabled: false
+          enabled: false,
         },
         {
           id: 10,
           iconName: "room_service",
           name: "Room Service",
-          enabled: false
+          enabled: false,
         },
         {
           id: 11,
           iconName: "sofa",
           name: "沙發",
-          enabled: false
+          enabled: false,
         },
         {
           id: 12,
           iconName: "dog",
           name: "寵物攜帶",
-          enabled: false
+          enabled: false,
         },
-      ]
-    }
+      ],
+    };
   },
-}
+  computed: {
+    ...mapGetters(["pageLoadingConfig"]),
+  },
+  methods: {
+    fetchSingleRoom() {
+      this.$store.commit("UPDATE_PAGE_LOADING_CONFIG", {
+        isLoading: true,
+        fullPage: true,
+      });
+
+      setTimeout(() => {
+        this.$store.commit("UPDATE_PAGE_LOADING_CONFIG", {
+          isLoading: false,
+          fullPage: true,
+        });
+      }, 2000);
+    },
+  },
+  created() {
+    this.fetchSingleRoom();
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -159,31 +210,62 @@ export default {
 .logo {
   width: 150px;
   position: absolute;
-  top: 32px;
-  left: 49px;
+  z-index: 2;
+  top: 12px;
+  left: 29px;
+
+  @media (min-width: 576px) {
+    top: 32px;
+    left: 49px;
+  }
 }
 
 .room-photos {
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
+  min-height: 400px;
+  cursor: pointer;
 
-  &::after {
-    content: "";
-    display: block;
-    clear: both;
+  @media (min-width: 576px) {
+    height: auto;
+    min-height: unset;
   }
 
   img {
     height: 100%;
   }
-  .main-photo {
-    float: left;
-    width: 60%;
-    height: 600px;
+
+  .light-box {
+    display: none;
+
+    &::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+
+    @media (min-width: 768px) {
+      display: block;
+    }
+
+    .main-photo {
+      float: left;
+      width: 60%;
+      height: 600px;
+    }
+
+    .sub-photo {
+      float: right;
+      width: 40%;
+      height: 300px;
+    }
   }
-  .sub-photo {
-    float: right;
-    width: 40%;
-    height: 300px;
+
+  .carousel {
+    display: block;
+    height: 400px;
+    @media (min-width: 768px) {
+      display: none;
+    }
   }
 }
 
@@ -192,7 +274,6 @@ export default {
 
   .introduction {
     position: relative;
-    // outline: 1px solid #f00;
     width: 100%;
 
     @media (min-width: 768px) {
@@ -267,7 +348,7 @@ export default {
     }
 
     .utilites {
-      background: #F0F0F0;
+      background: #f0f0f0;
       display: flex;
       flex-wrap: wrap;
 
@@ -280,8 +361,7 @@ export default {
       }
 
       .utility {
-        padding-bottom: 40px;
-
+        padding-bottom: 20px;
         @media (min-width: 375px) {
           flex: 1 0 50%;
         }
@@ -302,7 +382,7 @@ export default {
           padding-bottom: 0;
 
           @media (min-width: 375px) {
-            padding-bottom: 40px;
+            padding-bottom: 20px;
           }
         }
 
@@ -312,9 +392,10 @@ export default {
           }
         }
 
-        svg, span {
+        svg,
+        span {
           vertical-align: middle;
-          color: #6D7278;
+          color: #6d7278;
         }
         span {
           font-size: 12px;
@@ -323,7 +404,8 @@ export default {
       }
 
       .enabled-utility {
-        svg, span {
+        svg,
+        span {
           color: #000000;
         }
       }

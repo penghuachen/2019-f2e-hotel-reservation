@@ -45,7 +45,7 @@
           </div>
           <div class="check-out">
             <p class="text">Check out</p>
-            <p>15:00 — 21:00</p>
+            <p>21:00</p>
           </div>
         </div>
         <div class="utilites">
@@ -188,7 +188,7 @@ export default {
 }
 
 .each-room-details {
-  padding: 40px;
+  padding: 30px;
 
   .introduction {
     position: relative;

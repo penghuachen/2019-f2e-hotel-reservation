@@ -5,61 +5,59 @@
       :fullPage="pageLoadingConfig.fullPage"
     />
     <h2 class="logo">
-      <a href="#">
+      <router-link :to="{ name: 'Home' }">
         <img src="@/assets/images/inner-page-logo.svg" alt="logo" />
-      </a>
+      </router-link>
     </h2>
     <div class="room-photos">
       <div class="room-photo" @click.prevent="toggler = !toggler">
-        <div 
-          v-for="(imageUrl, index) in singeRoomLightboxPhotos" 
-          :key="index" 
+        <div
+          v-for="(imageUrl, index) in singeRoomLightboxPhotos"
+          :key="index"
           class="photo"
-          :class="[ index === 0 ? 'main-photo' : 'sub-photo' ]"
-          >
+          :class="[index === 0 ? 'main-photo' : 'sub-photo']"
+        >
           <img :src="imageUrl" />
         </div>
       </div>
       <div class="carousel" @click.prevent="toggler = !toggler">
-        <Carousel
-          :images="singeRoomCarouselPhotos"
-        />
+        <Carousel :images="singeRoomCarouselPhotos" />
       </div>
-      <FsLightbox
-        :toggler="toggler"
-        :sources="singeRoomLightboxPhotos"
-      />
+      <FsLightbox :toggler="toggler" :sources="singeRoomLightboxPhotos" />
     </div>
     <div class="each-room-details">
       <div class="introduction">
-        <h2>Single Room</h2>
+        <h2>{{ room.name }}</h2>
         <div class="prices">
-          <p class="normal">NT.1380</p>
+          <p class="normal">NT.{{ room.normalDayPrice }}</p>
           <p class="day">平日(一~四)</p>
-          <p class="holiday">NT.1500</p>
+          <p class="holiday">NT.{{ room.holidayPrice }}</p>
           <p class="day">假日(五~日)</p>
         </div>
         <ul class="specification">
-          <li>房客人數限制： 1~1 人</li>
-          <li>床型：單人床</li>
-          <li>衛浴數量： 1 間</li>
-          <li>房間大小： 18 平方公尺</li>
+          <li>
+            房客人數限制： 
+            {{ room.descriptionShort && room.descriptionShort.GuestMin }}~
+            {{ room.descriptionShort && room.descriptionShort.GuestMax }}
+            人
+          </li>
+          <li>床型：{{ room.descriptionShort && checkBedType(room.descriptionShort.Bed) }}</li>
+          <li>衛浴數量： {{ room.descriptionShort && room.descriptionShort["Private-Bath"] }}1 間</li>
+          <li>房間大小： {{ room.descriptionShort && room.descriptionShort.Footage }} 平方公尺</li>
         </ul>
-        <div class="brief">
-          Single Room is only reserved for one guest. There is a bedroom with a
-          single size bed and a private bathroom. Everything you need prepared
-          for you: sheets and blankets, towels, soap and shampoo, hairdryer are
-          provided. In the room there is AC and of course WiFi.
-        </div>
+        <div class="brief">{{ room.description }}</div>
         <p class="slashes">\ \ \</p>
         <div class="valid-time">
           <div class="check-in">
             <p class="text">Check in</p>
-            <p>15:00 — 21:00</p>
+            <p>
+              {{ room.checkInAndOut && room.checkInAndOut.checkInEarly }} —
+              {{ room.checkInAndOut && room.checkInAndOut.checkInLate }}
+            </p>
           </div>
           <div class="check-out">
             <p class="text">Check out</p>
-            <p>21:00</p>
+            <p>{{ room.checkInAndOut && room.checkInAndOut.checkOut }}</p>
           </div>
         </div>
         <div class="utilites">
@@ -174,9 +172,10 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "pageLoadingConfig", 
+      "pageLoadingConfig",
       "singeRoomCarouselPhotos",
-      "singeRoomLightboxPhotos"
+      "singeRoomLightboxPhotos",
+      "room",
     ]),
   },
   methods: {
@@ -186,12 +185,25 @@ export default {
         fullPage: true,
       });
 
-      await this.$store.dispatch("fetchSingleRoom", { id: this.$route.params.id });
+      await this.$store.dispatch("fetchSingleRoom", {
+        id: this.$route.params.id,
+      });
 
       this.$store.commit("UPDATE_PAGE_LOADING_CONFIG", {
         isLoading: false,
         fullPage: true,
       });
+    },
+    checkBedType(beds) {
+      const type = {
+        Double: "雙人床",
+        Single: "單人床",
+        Queen: "加大雙人床",
+        "Small Double": "小型雙人床",
+      };
+      return beds.slice(0, 1)
+        .map((bed) => type[bed])
+        .join("");
     },
   },
   created() {
@@ -281,11 +293,12 @@ export default {
     }
 
     h2 {
-      font-size: 28px;
-      margin-bottom: 30px;
+      font-size: 24px;
+      margin-bottom: 20px;
 
       @media (min-width: 576px) {
         font-size: 36px;
+        margin-bottom: 30px;
       }
     }
 

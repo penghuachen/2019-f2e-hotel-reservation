@@ -8,7 +8,7 @@ export default new Vuex.Store({
   state: {
     rooms: [],
     singleRoom: {
-      room: []
+      room: [],
     },
     pageLoadingConfig: {
       isLoading: false,
@@ -35,29 +35,28 @@ export default new Vuex.Store({
       commit("ROOMS", data.items);
     },
     async fetchSingleRoom({ commit }, { id }) {
-      console.log(commit);
-      const { data } = await api.get(`/room/${ id }`);
-      console.log("Output ---------------------------------------");
-      console.log("Output -> fetchSingleRoom -> data", data);
-      console.log("Output ---------------------------------------");
+      const { data } = await api.get(`/room/${id}`);
       commit("SINGLE_ROOM", data);
     },
   },
   getters: {
     rooms: (state) => state.rooms,
     pageLoadingConfig: (state) => state.pageLoadingConfig,
-    singeRoomLightboxPhotos: state => {
+    room: (state) => {
       return (
-        state.singleRoom.room[0] && 
-        state.singleRoom.room[0].imageUrl
+        state.singleRoom.room.length &&
+        state.singleRoom.room[0]
       )
     },
-    singeRoomCarouselPhotos: state => {
+    singeRoomLightboxPhotos: (state) => {
+      return state.singleRoom.room[0] && state.singleRoom.room[0].imageUrl;
+    },
+    singeRoomCarouselPhotos: (state) => {
       return (
-        state.singleRoom.room[0] && 
-        state.singleRoom.room[0].imageUrl.map(imageUrl => ({ imageUrl }))
-      )
-    }
+        state.singleRoom.room[0] &&
+        state.singleRoom.room[0].imageUrl.map((imageUrl) => ({ imageUrl }))
+      );
+    },
   },
   modules: {},
 });

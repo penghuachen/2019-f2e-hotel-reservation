@@ -130,7 +130,7 @@ export default {
     width: 148px;
     height: 148px;
     margin: 0 auto 50px;
-    
+
     a {
       display: inline-block;
     }

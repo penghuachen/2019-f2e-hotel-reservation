@@ -2,13 +2,13 @@
   <div class="each-room-container">
     <div class="room-photos">
       <div class="main-photo">
-        <img src="https://picsum.photos/1000/600/?random=1">
+        <img src="https://picsum.photos/1000/600/?random=1" />
       </div>
       <div class="sub-photo">
-        <img src="https://picsum.photos/500/300/?random=2">
+        <img src="https://picsum.photos/500/300/?random=2" />
       </div>
       <div class="sub-photo">
-        <img src="https://picsum.photos/500/300/?random=3">
+        <img src="https://picsum.photos/500/300/?random=3" />
       </div>
     </div>
     <div class="each-room-details">
@@ -26,27 +26,32 @@
           <li>衛浴數量： 1 間</li>
           <li>房間大小： 18 平方公尺</li>
         </ul>
-        <div class="brief">Single Room is only reserved for one guest. There is a bedroom with a single size bed and a private bathroom. Everything you need prepared for you: sheets and blankets, towels, soap and shampoo, hairdryer are provided. In the room there is AC and of course WiFi.</div>
+        <div class="brief">
+          Single Room is only reserved for one guest. There is a bedroom with a
+          single size bed and a private bathroom. Everything you need prepared
+          for you: sheets and blankets, towels, soap and shampoo, hairdryer are
+          provided. In the room there is AC and of course WiFi.
+        </div>
         <p class="slashes">\ \ \</p>
         <div class="valid-time">
           <div class="check-in">
             <p class="text">Check in</p>
-            <p>15:00  —  21:00</p>
+            <p>15:00 — 21:00</p>
           </div>
           <div class="check-out">
             <p class="text">Check out</p>
-            <p>15:00  —  21:00</p>
+            <p>15:00 — 21:00</p>
           </div>
         </div>
-        <div class="utilites">utiles</div>
+        <div class="utilites">
+          utiles
+          <SvgIcon iconName="wifi" />
+        </div>
       </div>
       <div class="room-reservation"></div>
     </div>
   </div>
 </template>
-
-
-
 
 <style lang="scss" scoped>
 .each-room-container {
@@ -55,7 +60,7 @@
 }
 
 .room-photos {
-  box-shadow: 0 5px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.2);
 
   &::after {
     content: "";
@@ -75,7 +80,6 @@
     float: right;
     width: 40%;
     height: 300px;
-    
   }
 }
 
@@ -85,7 +89,7 @@
   @media (min-width: 768px) {
     padding: 40px;
   }
-  
+
   .introduction {
     position: relative;
     outline: 1px solid #f00;
@@ -98,7 +102,7 @@
     h2 {
       font-size: 28px;
       margin-bottom: 30px;
-      
+
       @media (min-width: 576px) {
         font-size: 36px;
       }
@@ -124,7 +128,7 @@
 
       .day {
         font-size: 14px;
-        color: #6D7278;
+        color: #6d7278;
       }
 
       .holiday {
@@ -143,21 +147,28 @@
     .slashes {
       margin: 30px 0;
     }
-    
+
     .valid-time {
       margin-bottom: 40px;
       display: flex;
-      
+
       .text {
         font-size: 14px;
       }
 
-      .check-out, .check-in {
+      .check-out,
+      .check-in {
         font-size: 20px;
       }
-      
+
       .check-in {
         margin-right: 96px;
+      }
+    }
+
+    .utilites {
+      svg {
+        color: #00008b;
       }
     }
   }

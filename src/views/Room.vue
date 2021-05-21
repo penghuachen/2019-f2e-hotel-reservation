@@ -1,5 +1,10 @@
 <template>
   <div class="each-room-container">
+    <h2 class="logo">
+      <a href="#">
+        <img src="@/assets/images/inner-page-logo.svg" alt="logo">
+      </a>
+    </h2>
     <div class="room-photos">
       <div class="main-photo">
         <img src="https://picsum.photos/1000/600/?random=1" />
@@ -44,8 +49,15 @@
           </div>
         </div>
         <div class="utilites">
-          utiles
-          <SvgIcon iconName="wifi" />
+          <div 
+            v-for="utility in utilites" 
+            :key="utility.id"
+            class="utility" 
+            :class="{ 'enabled-utility': utility.enabled }"
+            >
+            <SvgIcon :iconName="utility.iconName" />
+            <span>{{ utility.name }}</span>
+          </div>
         </div>
       </div>
       <div class="room-reservation"></div>
@@ -53,10 +65,102 @@
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      // 後續寫入 getter, mapping api data
+      utilites: [
+        {
+          id: 1,
+          iconName: "wifi",
+          name: "Wi-Fi",
+          enabled: false
+        },
+        {
+          id: 2,
+          iconName: "phone",
+          name: "電話",
+          enabled: false
+        },
+        {
+          id: 3,
+          iconName: "mountain-range",
+          name: "漂亮的視野",
+          enabled: false
+        },
+        {
+          id: 4,
+          iconName: "breakfast",
+          name: "早餐",
+          enabled: false
+        },
+        {
+          id: 5,
+          iconName: "breeze",
+          name: "空調",
+          enabled: false
+        },
+        {
+          id: 6,
+          iconName: "no-smoke-symbol",
+          name: "禁止吸煙",
+          enabled: false
+        },
+        {
+          id: 7,
+          iconName: "bar",
+          name: "Mini Bar",
+          enabled: false
+        },
+        {
+          id: 8,
+          iconName: "refrigerator",
+          name: "冰箱",
+          enabled: false
+        },
+        {
+          id: 9,
+          iconName: "crawling-baby-silhouette",
+          name: "適合兒童",
+          enabled: false
+        },
+        {
+          id: 10,
+          iconName: "room_service",
+          name: "Room Service",
+          enabled: false
+        },
+        {
+          id: 11,
+          iconName: "sofa",
+          name: "沙發",
+          enabled: false
+        },
+        {
+          id: 12,
+          iconName: "dog",
+          name: "寵物攜帶",
+          enabled: false
+        },
+      ]
+    }
+  },
+}
+</script>
+
 <style lang="scss" scoped>
 .each-room-container {
   width: 100%;
   height: 600px;
+  position: relative;
+}
+
+.logo {
+  width: 150px;
+  position: absolute;
+  top: 32px;
+  left: 49px;
 }
 
 .room-photos {
@@ -84,15 +188,11 @@
 }
 
 .each-room-details {
-  padding: 20px;
-
-  @media (min-width: 768px) {
-    padding: 40px;
-  }
+  padding: 40px;
 
   .introduction {
     position: relative;
-    outline: 1px solid #f00;
+    // outline: 1px solid #f00;
     width: 100%;
 
     @media (min-width: 768px) {
@@ -167,8 +267,65 @@
     }
 
     .utilites {
-      svg {
-        color: #00008b;
+      background: #F0F0F0;
+      display: flex;
+      flex-wrap: wrap;
+
+      @media (min-width: 375px) {
+        padding: 15px;
+      }
+
+      @media (min-width: 768px) {
+        padding: 30px;
+      }
+
+      .utility {
+        padding-bottom: 40px;
+
+        @media (min-width: 375px) {
+          flex: 1 0 50%;
+        }
+
+        @media (min-width: 576px) {
+          flex: 1 0 33.33%;
+        }
+
+        @media (min-width: 768px) {
+          flex: 1 0 50%;
+        }
+
+        @media (min-width: 992px) {
+          flex: 1 0 33.33%;
+        }
+
+        &:nth-child(n + 9) {
+          padding-bottom: 0;
+
+          @media (min-width: 375px) {
+            padding-bottom: 40px;
+          }
+        }
+
+        &:nth-child(n + 10) {
+          @media (min-width: 375px) {
+            padding-bottom: 0;
+          }
+        }
+
+        svg, span {
+          vertical-align: middle;
+          color: #6D7278;
+        }
+        span {
+          font-size: 12px;
+          margin-left: 26px;
+        }
+      }
+
+      .enabled-utility {
+        svg, span {
+          color: #000000;
+        }
       }
     }
   }

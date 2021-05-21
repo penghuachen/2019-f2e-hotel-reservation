@@ -4,8 +4,8 @@
     <!-- Additional required wrapper -->
     <div class="swiper-wrapper">
       <!-- Slides -->
-      <div class="swiper-slide" v-for="room in rooms" :key="room.id">
-        <img :src="room.imageUrl" />
+      <div class="swiper-slide" v-for="image in images" :key="image.id">
+        <img :src="image.imageUrl" />
       </div>
     </div>
   </div>
@@ -15,12 +15,12 @@
 import { initializeSwiper } from "@/plugins/swiper.js";
 export default {
   props: {
-    rooms: {
+    images: {
       type: Array,
     },
   },
   watch: {
-    rooms: {
+    images: {
       handler() {
         this.$nextTick(() => {
           initializeSwiper();

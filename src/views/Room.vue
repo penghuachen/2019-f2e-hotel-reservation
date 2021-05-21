@@ -10,29 +10,24 @@
       </a>
     </h2>
     <div class="room-photos">
-      <div class="light-box" @click.prevent="toggler = !toggler">
-        <div class="main-photo">
-          <img src="https://picsum.photos/1000/600/?random=1" />
-        </div>
-        <div class="sub-photo">
-          <img src="https://picsum.photos/500/300/?random=2" />
-        </div>
-        <div class="sub-photo">
-          <img src="https://picsum.photos/500/300/?random=3" />
+      <div class="room-photo" @click.prevent="toggler = !toggler">
+        <div 
+          v-for="(imageUrl, index) in singeRoomLightboxPhotos" 
+          :key="index" 
+          class="photo"
+          :class="[ index === 0 ? 'main-photo' : 'sub-photo' ]"
+          >
+          <img :src="imageUrl" />
         </div>
       </div>
       <div class="carousel" @click.prevent="toggler = !toggler">
         <Carousel
-          :rooms="[{ imageUrl: 'https://picsum.photos/500/400/?random=3' }]"
+          :images="singeRoomCarouselPhotos"
         />
       </div>
       <FsLightbox
         :toggler="toggler"
-        :sources="[
-          'https://picsum.photos/1000/600/?random=1',
-          'https://picsum.photos/1000/600/?random=2',
-          'https://picsum.photos/1000/600/?random=3',
-        ]"
+        :sources="singeRoomLightboxPhotos"
       />
     </div>
     <div class="each-room-details">
@@ -91,6 +86,7 @@ import Carousel from "@/components/Carousel.vue";
 import Loading from "@/components/Loading.vue";
 
 export default {
+  name: "singleRoom",
   components: {
     FsLightbox,
     Carousel,
@@ -177,21 +173,25 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["pageLoadingConfig"]),
+    ...mapGetters([
+      "pageLoadingConfig", 
+      "singeRoomCarouselPhotos",
+      "singeRoomLightboxPhotos"
+    ]),
   },
   methods: {
-    fetchSingleRoom() {
+    async fetchSingleRoom() {
       this.$store.commit("UPDATE_PAGE_LOADING_CONFIG", {
         isLoading: true,
         fullPage: true,
       });
 
-      setTimeout(() => {
-        this.$store.commit("UPDATE_PAGE_LOADING_CONFIG", {
-          isLoading: false,
-          fullPage: true,
-        });
-      }, 2000);
+      await this.$store.dispatch("fetchSingleRoom", { id: this.$route.params.id });
+
+      this.$store.commit("UPDATE_PAGE_LOADING_CONFIG", {
+        isLoading: false,
+        fullPage: true,
+      });
     },
   },
   created() {
@@ -234,7 +234,7 @@ export default {
     height: 100%;
   }
 
-  .light-box {
+  .room-photo {
     display: none;
 
     &::after {

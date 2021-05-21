@@ -5,7 +5,7 @@
       :fullPage="pageLoadingConfig.fullPage"
     />
     <div class="carousel">
-      <Carousel :rooms="rooms" />
+      <Carousel :images="rooms" />
       <div class="home-information">
         <h1 class="logo">
           <a href="#">

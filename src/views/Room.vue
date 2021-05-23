@@ -85,7 +85,20 @@
           </div>
         </div>
       </div>
-      <div class="room-reservation"></div>
+      <div class="room-reservation">
+        <Calendar v-model="date" read-only/>
+        <!-- <DatePicker v-model="date">
+          <template v-slot="{ inputValue, togglePopover }">
+            <div>
+              <input
+                @click="togglePopover()"
+                :value="inputValue"
+                readonly
+              />
+            </div>
+          </template>
+        </DatePicker> -->
+      </div>
     </div>
   </div>
 </template>
@@ -95,6 +108,8 @@ import { mapGetters } from "vuex";
 import FsLightbox from "fslightbox-vue";
 import Carousel from "@/components/Carousel.vue";
 import Loading from "@/components/Loading.vue";
+import Calendar from 'v-calendar/lib/components/calendar.umd'
+// import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 
 export default {
   name: "singleRoom",
@@ -102,10 +117,13 @@ export default {
     FsLightbox,
     Carousel,
     Loading,
+    Calendar,
+    // DatePicker
   },
   data() {
     return {
       toggler: false,
+      date: new Date(),
     };
   },
   computed: {
@@ -222,13 +240,23 @@ export default {
 }
 
 .each-room-details {
+  display: flex;
+  flex-direction: column;
   padding: 30px;
+
+  @media (min-width: 1440px) {
+    padding: 30px 150px;
+  }
+
+  @media (min-width: 992px) {
+    flex-direction: row;
+  }
 
   .introduction {
     position: relative;
     width: 100%;
 
-    @media (min-width: 768px) {
+    @media (min-width: 992px) {
       width: 50%;
     }
 
@@ -323,14 +351,6 @@ export default {
           flex: 1 0 33.33%;
         }
 
-        @media (min-width: 768px) {
-          flex: 1 0 50%;
-        }
-
-        @media (min-width: 992px) {
-          flex: 1 0 33.33%;
-        }
-
         &:nth-child(n + 9) {
           padding-bottom: 0;
 
@@ -366,7 +386,51 @@ export default {
   }
 
   .room-reservation {
-    width: 50%;
+    width: 100%;
+    margin-top: 30px;
+    position: relative;
+
+    @media (min-width: 992px) {
+      margin-top: 0;
+      width: 50%;
+    }
+
+    ::v-deep .vc-container {
+      position: unset;
+      min-width: 100%;
+      width: auto;
+      height: auto;
+
+      @media (min-width: 576px) {
+        width: 350px;
+        height: 350px;
+      }
+
+      @media (min-width: 992px) {
+        position: absolute;
+        top: 0;
+        right: 0;
+        min-width:unset;
+      }
+
+      @media (min-width: 1440px) {
+        width: 400px;
+        height: 400px;
+      }
+
+      .vc-weekday {
+        line-height: 25px;
+        font-size: 20px;
+      }
+
+      .vc-day {
+        height: 45px;
+        @media (min-width: 1440px) {
+          height: 54px;
+        }
+      }
+    }
+    
   }
 }
 </style>

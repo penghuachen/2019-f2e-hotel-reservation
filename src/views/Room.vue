@@ -36,14 +36,27 @@
         </div>
         <ul class="specification">
           <li>
-            房客人數限制： 
+            房客人數限制：
             {{ room.descriptionShort && room.descriptionShort.GuestMin }}~
             {{ room.descriptionShort && room.descriptionShort.GuestMax }}
             人
           </li>
-          <li>床型：{{ room.descriptionShort && checkBedType(room.descriptionShort.Bed) }}</li>
-          <li>衛浴數量： {{ room.descriptionShort && room.descriptionShort["Private-Bath"] }}1 間</li>
-          <li>房間大小： {{ room.descriptionShort && room.descriptionShort.Footage }} 平方公尺</li>
+          <li>
+            床型：{{
+              room.descriptionShort && checkBedType(room.descriptionShort.Bed)
+            }}
+          </li>
+          <li>
+            衛浴數量：
+            {{
+              room.descriptionShort && room.descriptionShort["Private-Bath"]
+            }}1 間
+          </li>
+          <li>
+            房間大小：
+            {{ room.descriptionShort && room.descriptionShort.Footage }}
+            平方公尺
+          </li>
         </ul>
         <div class="brief">{{ room.description }}</div>
         <p class="slashes">\ \ \</p>
@@ -93,81 +106,6 @@ export default {
   data() {
     return {
       toggler: false,
-      // 後續寫入 getter, mapping api data
-      utilites: [
-        {
-          id: 1,
-          iconName: "wifi",
-          name: "Wi-Fi",
-          enabled: false,
-        },
-        {
-          id: 2,
-          iconName: "phone",
-          name: "電話",
-          enabled: false,
-        },
-        {
-          id: 3,
-          iconName: "mountain-range",
-          name: "漂亮的視野",
-          enabled: false,
-        },
-        {
-          id: 4,
-          iconName: "breakfast",
-          name: "早餐",
-          enabled: false,
-        },
-        {
-          id: 5,
-          iconName: "breeze",
-          name: "空調",
-          enabled: false,
-        },
-        {
-          id: 6,
-          iconName: "no-smoke-symbol",
-          name: "禁止吸煙",
-          enabled: false,
-        },
-        {
-          id: 7,
-          iconName: "bar",
-          name: "Mini Bar",
-          enabled: false,
-        },
-        {
-          id: 8,
-          iconName: "refrigerator",
-          name: "冰箱",
-          enabled: false,
-        },
-        {
-          id: 9,
-          iconName: "crawling-baby-silhouette",
-          name: "適合兒童",
-          enabled: false,
-        },
-        {
-          id: 10,
-          iconName: "room_service",
-          name: "Room Service",
-          enabled: false,
-        },
-        {
-          id: 11,
-          iconName: "sofa",
-          name: "沙發",
-          enabled: false,
-        },
-        {
-          id: 12,
-          iconName: "dog",
-          name: "寵物攜帶",
-          enabled: false,
-        },
-      ],
     };
   },
   computed: {
@@ -176,6 +114,7 @@ export default {
       "singeRoomCarouselPhotos",
       "singeRoomLightboxPhotos",
       "room",
+      "utilites",
     ]),
   },
   methods: {
@@ -201,7 +140,8 @@ export default {
         Queen: "加大雙人床",
         "Small Double": "小型雙人床",
       };
-      return beds.slice(0, 1)
+      return beds
+        .slice(0, 1)
         .map((bed) => type[bed])
         .join("");
     },

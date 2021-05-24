@@ -91,21 +91,80 @@
           :available-dates="{ start: new Date(), end: null }"
         />
         <div class="booking">
-          <button>預約時段</button>
+          <button @click="bookingDialogVisible = true">預約時段</button>
         </div>
-        <!-- <DatePicker v-model="date">
-          <template v-slot="{ inputValue, togglePopover }">
-            <div>
-              <input
-                @click="togglePopover()"
-                :value="inputValue"
-                readonly
-              />
-            </div>
-          </template>
-        </DatePicker> -->
       </div>
     </div>
+    <Dialog :dialogVisible="bookingDialogVisible">
+      <template v-slot:header>
+        <h3>預約時段</h3>
+        <p>\ \ \</p>
+      </template>
+      <template v-slot:body>
+        <form class="booking-form">
+          <div class="name">
+            <label for="name">
+              <span class="field-title">姓名</span>
+              <input type="text" id="name">
+            </label>
+          </div>
+          <div class="telephone">
+            <label for="telephone">
+              <span class="field-title">電話</span>
+              <input type="tel" id="telephone">
+            </label>
+          </div>
+          <div class="date">
+            <span class="field-title">預約起迄</span>
+            <DatePicker class="start-date" v-model="date">
+              <template v-slot="{ inputValue, togglePopover }">
+                <div>
+                  <input
+                    @click="togglePopover()"
+                    :value="inputValue"
+                    readonly
+                  />
+                </div>
+              </template>
+            </DatePicker>
+            <span class="separate">~</span>
+            <DatePicker class="end-date" v-model="date">
+              <template v-slot="{ inputValue, togglePopover }">
+                <div>
+                  <input
+                    @click="togglePopover()"
+                    :value="inputValue"
+                    readonly
+                  />
+                </div>
+              </template>
+            </DatePicker>
+          </div>
+          <div class="booking-price">
+            <div class="container">
+              <div class="normal">
+                <span>平日時段</span>
+                <span>1夜</span>
+              </div>
+              <div class="holiday">
+                <span>假日時段</span>
+                <span>1夜</span>
+              </div>
+            </div>
+            <div class="total-price">
+              <span> = </span>
+              <span>NT.2850</span>
+            </div>
+          </div>
+        </form>
+      </template>
+      <template v-slot:footer>
+        <div class="buttons-block">
+          <button class="cancel">取消</button>
+          <button class="confirm">確定預約</button>
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -114,8 +173,9 @@ import { mapGetters } from "vuex";
 import FsLightbox from "fslightbox-vue";
 import Carousel from "@/components/Carousel.vue";
 import Loading from "@/components/Loading.vue";
+import Dialog from "@/components/Dialog.vue";
 import Calendar from "v-calendar/lib/components/calendar.umd";
-// import DatePicker from 'v-calendar/lib/components/date-picker.umd'
+import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 
 export default {
   name: "singleRoom",
@@ -124,11 +184,13 @@ export default {
     Carousel,
     Loading,
     Calendar,
-    // DatePicker
+    DatePicker,
+    Dialog
   },
   data() {
     return {
       toggler: false,
+      bookingDialogVisible: false,
       date: new Date(),
     };
   },
@@ -330,7 +392,7 @@ export default {
       }
 
       .check-in {
-        margin-right: 96px;
+        margin-right: 75px;
       }
     }
 
@@ -460,10 +522,7 @@ export default {
         height: 53px;
         color: #ffffff;
         background: #575757;
-        border: none;
-        outline: none;
         position: relative;
-        cursor: pointer;
         transition: background 0.3s;
 
         &:hover {
@@ -490,6 +549,118 @@ export default {
         }
       }
     }
+  }
+}
+
+
+::v-deep .dialog-body {
+  padding: 0;
+}
+
+::v-deep .booking-form {
+  margin-bottom: 20px;
+  .name, .telephone, .date {
+    padding: 0 40px;
+    span {
+      font-size: 14px;
+      font-weight: 600;
+    }
+  }
+
+  .name, .telephone {
+    padding-bottom: 15px;
+    .field-title {
+      margin-right: 63px;
+    }
+  }
+
+  .date {
+    .field-title {
+      margin-right: 31px;
+    }
+  }
+
+  label {
+    display: block;
+    width: 100%;
+  }
+  
+  input {
+    border: 1px solid #C9C9C9;
+    border-radius: 5px;
+    height: 32px;
+    min-width: calc(100% - 96px);
+    padding: 5px 10px;
+  }
+
+  .date {
+    .start-date, .end-date {
+      display: inline-block;
+      width: 106px;
+    }
+    .separate {
+      margin: 0 10px;
+    }
+    input {
+      width: 100%;
+      min-width: unset;
+      text-align: center;
+    }
+  }
+  
+  .booking-price {
+    margin-top: 30px;
+    position: relative;
+
+    .container {
+      background: #EDEDED;
+      color: #6D7278;
+      font-size: 12px;  
+      padding: 15px 42px;
+      font-weight: 600;
+
+      .normal, .holiday {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .normal {
+        margin-bottom: 10px;
+      }
+    }
+    
+    .total-price {
+      padding: 10px 42px;
+      text-align: right;
+      font-size: 26px;
+      color: #FF5C5C;
+      font-weight: 600;
+
+      span {
+        &:first-child {
+          margin-right: 25px;
+        }
+      }
+    }
+  }
+}
+
+::v-deep .buttons-block {
+  display: flex;
+  justify-content: space-between;
+
+  .cancel {
+    width: 78px;
+    height: 37px;
+    background: #D8D8D8;
+    color: #6D7278;
+  }
+
+  .confirm {
+    width: 107px;
+    height: 37px;
+    background: #484848;
+    color: #ffffff;
   }
 }
 </style>

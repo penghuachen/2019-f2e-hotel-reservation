@@ -86,7 +86,13 @@
         </div>
       </div>
       <div class="room-reservation">
-        <Calendar v-model="date" read-only/>
+        <Calendar
+          v-model="date"
+          :available-dates="{ start: new Date(), end: null }"
+        />
+        <div class="booking">
+          <button>預約時段</button>
+        </div>
         <!-- <DatePicker v-model="date">
           <template v-slot="{ inputValue, togglePopover }">
             <div>
@@ -108,7 +114,7 @@ import { mapGetters } from "vuex";
 import FsLightbox from "fslightbox-vue";
 import Carousel from "@/components/Carousel.vue";
 import Loading from "@/components/Loading.vue";
-import Calendar from 'v-calendar/lib/components/calendar.umd'
+import Calendar from "v-calendar/lib/components/calendar.umd";
 // import DatePicker from 'v-calendar/lib/components/date-picker.umd'
 
 export default {
@@ -242,7 +248,7 @@ export default {
 .each-room-details {
   display: flex;
   flex-direction: column;
-  padding: 30px;
+  padding: 30px 30px 90px 30px;
 
   @media (min-width: 1440px) {
     padding: 30px 150px;
@@ -332,6 +338,7 @@ export default {
       background: #f0f0f0;
       display: flex;
       flex-wrap: wrap;
+      border-radius: 10px;
 
       @media (min-width: 375px) {
         padding: 15px;
@@ -400,6 +407,9 @@ export default {
       min-width: 100%;
       width: auto;
       height: auto;
+      background: #f7f7f7;
+      box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.15);
+      border: none;
 
       @media (min-width: 576px) {
         width: 350px;
@@ -410,7 +420,7 @@ export default {
         position: absolute;
         top: 0;
         right: 0;
-        min-width:unset;
+        min-width: unset;
       }
 
       @media (min-width: 1440px) {
@@ -420,17 +430,66 @@ export default {
 
       .vc-weekday {
         line-height: 25px;
-        font-size: 20px;
+        font-size: 18px;
       }
 
       .vc-day {
         height: 45px;
         @media (min-width: 1440px) {
-          height: 54px;
+          height: 50px;
         }
       }
     }
-    
+
+    .booking {
+      position: absolute;
+      right: unset;
+      top: 370px;
+
+      @media (min-width: 992px) {
+        right: 230px;
+      }
+
+      @media (min-width: 1440px) {
+        right: 280px;
+        top: 420px;
+      }
+
+      button {
+        width: 118px;
+        height: 53px;
+        color: #ffffff;
+        background: #575757;
+        border: none;
+        outline: none;
+        position: relative;
+        cursor: pointer;
+        transition: background 0.3s;
+
+        &:hover {
+          background: #000000;
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          z-index: -1;
+          top: 5px;
+          right: 0;
+          bottom: 0;
+          left: 5px;
+          width: 100%;
+          height: 100%;
+          background: repeating-linear-gradient(
+            45deg,
+            #575757,
+            #575757 2px,
+            #ffffff 2px,
+            #ffffff 4px
+          );
+        }
+      }
+    }
   }
 }
 </style>

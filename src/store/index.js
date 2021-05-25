@@ -88,6 +88,16 @@ export default new Vuex.Store({
         enabled: false,
       },
     ],
+    initBookingForm: {
+      name: "",
+      phone: "",
+      date: {
+        now: new Date(),
+        start: new Date(),
+        end: null
+      }
+    },
+    updatedBookingForm: {}
   },
   mutations: {
     ROOMS(state, rooms) {
@@ -102,6 +112,20 @@ export default new Vuex.Store({
     SINGLE_ROOM(state, room) {
       state.singleRoom = room;
     },
+    UPDATE_BOOKING_FORM(state, userInput) {
+      state.updatedBookingForm = {
+        ...state.updatedBookingForm,
+        date: {
+          ...state.updatedBookingForm.date,
+          ...userInput
+        }
+      }
+    },
+    RESET_BOOKING_FORM(state, resetData) {
+      state.updatedBookingForm = {
+        ...resetData
+      }
+    }
   },
   actions: {
     async fetchRooms({ commit }) {
@@ -157,6 +181,17 @@ export default new Vuex.Store({
         };
       });
     },
+    updatedBookingForm: state => {
+      return {
+        ...state.initBookingForm,
+        ...state.updatedBookingForm,
+        date: {
+          ...state.initBookingForm.date,
+          ...state.updatedBookingForm.date
+        }
+        
+      }
+    }
   },
   modules: {},
 });

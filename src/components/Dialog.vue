@@ -1,8 +1,9 @@
 <template>
-  <transition  name="fade">
+  <transition name="fade">
     <div v-if="dialogVisible" class="dialog-wrapper">
-      <div class="dialog">
-        <div class="dialog-header">
+      <div class="cover" @click="close"></div>
+      <div class="dialog" ref="dialog">
+        <div class="dialog-header" >
           <slot name="header"></slot>
         </div>
         <div class="dialog-body">
@@ -22,6 +23,10 @@ export default {
     dialogVisible: {
       type: Boolean,
       require: true
+    },
+    close: {
+      type: Function,
+      default: () => {}
     }
   }
 }
@@ -31,25 +36,26 @@ export default {
   .dialog-wrapper {
     position: fixed;
     top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+  }
+
+  .cover {
+    position: fixed;
+    top: 0;
     left: 0;
     bottom: 0;
     right: 0;
-    z-index: 2;
-    &::after {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      background: rgba(0,0,0,0.4);
-    }
+    z-index: 3;
+    background: rgba(0,0,0,0.4);
   }
 
   ::v-deep .dialog {
     border-radius: 5px;
     position: absolute;
+    z-index: 5;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

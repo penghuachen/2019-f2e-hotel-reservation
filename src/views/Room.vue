@@ -95,7 +95,7 @@
         </div>
       </div>
     </div>
-    <Dialog :dialogVisible="bookingDialogVisible">
+    <Dialog :dialogVisible="bookingDialogVisible" :close="close">
       <template v-slot:header>
         <h3>預約時段</h3>
         <p>\ \ \</p>
@@ -116,11 +116,16 @@
           </div>
           <div class="date">
             <span class="field-title">預約起迄</span>
-            <DatePicker class="start-date" v-model="date">
+            <DatePicker 
+              class="start-date" 
+              :value="updatedBookingForm.date.start"
+              @input="$store.commit('UPDATE_BOOKING_FORM', { start: $event })"
+              :available-dates="{ start: new Date(), end: null }"
+              >
               <template v-slot="{ inputValue, togglePopover }">
                 <div>
                   <input
-                    @click="togglePopover()"
+                    @click.stop="togglePopover()"
                     :value="inputValue"
                     readonly
                   />
@@ -128,11 +133,16 @@
               </template>
             </DatePicker>
             <span class="separate">~</span>
-            <DatePicker class="end-date" v-model="date">
+            <DatePicker 
+              class="end-date" 
+              :value="updatedBookingForm.date.end"
+              @input="$store.commit('UPDATE_BOOKING_FORM', { end: $event })"
+              :available-dates="{ start: updatedBookingForm.date.start }"
+              >
               <template v-slot="{ inputValue, togglePopover }">
                 <div>
                   <input
-                    @click="togglePopover()"
+                    @click.stop="togglePopover()"
                     :value="inputValue"
                     readonly
                   />
@@ -160,7 +170,7 @@
       </template>
       <template v-slot:footer>
         <div class="buttons-block">
-          <button class="cancel">取消</button>
+          <button class="cancel" @click="cancelBooking">取消</button>
           <button class="confirm">確定預約</button>
         </div>
       </template>
@@ -201,6 +211,7 @@ export default {
       "singeRoomLightboxPhotos",
       "room",
       "utilites",
+      "updatedBookingForm"
     ]),
   },
   methods: {
@@ -231,6 +242,21 @@ export default {
         .map((bed) => type[bed])
         .join("");
     },
+    cancelBooking() {
+      this.closeDialog();
+      this.resetBookingForm();
+    },
+    close() {
+      console.log('close');
+      this.closeDialog();
+      this.resetBookingForm();
+    },
+    resetBookingForm() {
+      this.$store.commit("RESET_BOOKING_FORM", {});
+    },
+    closeDialog() {
+      this.bookingDialogVisible = false;
+    }
   },
   created() {
     this.fetchSingleRoom();
@@ -241,7 +267,6 @@ export default {
 <style lang="scss" scoped>
 .each-room-container {
   width: 100%;
-  height: 600px;
   position: relative;
 }
 
@@ -496,6 +521,7 @@ export default {
       }
 
       .vc-day {
+        z-index: 0;
         height: 45px;
         @media (min-width: 1440px) {
           height: 50px;
@@ -654,6 +680,11 @@ export default {
     height: 37px;
     background: #D8D8D8;
     color: #6D7278;
+    transition: background .3s;
+
+    &:hover {
+      background: #eeeeee;
+    }
   }
 
   .confirm {
@@ -661,6 +692,11 @@ export default {
     height: 37px;
     background: #484848;
     color: #ffffff;
+    transition: background .3s;
+
+    &:hover {
+      background: #000000;
+    }
   }
 }
 </style>

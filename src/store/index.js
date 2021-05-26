@@ -9,6 +9,7 @@ export default new Vuex.Store({
     rooms: [],
     singleRoom: {
       room: [],
+      booking: [],
     },
     pageLoadingConfig: {
       isLoading: false,
@@ -93,11 +94,11 @@ export default new Vuex.Store({
       phone: "",
       date: {
         now: new Date(),
-        start: new Date(),
-        end: null
-      }
+        start: null,
+        end: null,
+      },
     },
-    updatedBookingForm: {}
+    updatedBookingForm: {},
   },
   mutations: {
     ROOMS(state, rooms) {
@@ -112,20 +113,20 @@ export default new Vuex.Store({
     SINGLE_ROOM(state, room) {
       state.singleRoom = room;
     },
-    UPDATE_BOOKING_FORM(state, userInput) {
+    UPDATE_BOOKING_FORM(state, form) {
       state.updatedBookingForm = {
-        ...state.updatedBookingForm,
+        ...form,
         date: {
           ...state.updatedBookingForm.date,
-          ...userInput
-        }
-      }
+          ...form.date,
+        },
+      };
     },
     RESET_BOOKING_FORM(state, resetData) {
       state.updatedBookingForm = {
-        ...resetData
-      }
-    }
+        ...resetData,
+      };
+    },
   },
   actions: {
     async fetchRooms({ commit }) {
@@ -134,7 +135,27 @@ export default new Vuex.Store({
     },
     async fetchSingleRoom({ commit }, { id }) {
       const { data } = await api.get(`/room/${id}`);
+      console.log("Output ---------------------------------------");
+      console.log("Output -> fetchSingleRoom -> data", data);
+      console.log("Output ---------------------------------------");
       commit("SINGLE_ROOM", data);
+    },
+    async sendUserBooking({ commit }, form) {
+      console.log("Output -------------------------------------------");
+      console.log("Output -> sendUserBooking -> commit", commit);
+      console.log("Output -------------------------------------------");
+      const { data } = await api.post(`/room/${form.id}`, {
+        ...form,
+      });
+      console.log("Output ---------------------------------------");
+      console.log("Output -> sendUserBooking -> data", data);
+      console.log("Output ---------------------------------------");
+    },
+    async deleteBooking({ commit }) {
+      console.log("Output -----------------------------------------");
+      console.log("Output -> deleteBooking -> commit", commit);
+      console.log("Output -----------------------------------------");
+      await api.delete("/rooms");
     },
   },
   getters: {
@@ -181,17 +202,28 @@ export default new Vuex.Store({
         };
       });
     },
-    updatedBookingForm: state => {
+    updatedBookingForm: (state) => {
       return {
         ...state.initBookingForm,
         ...state.updatedBookingForm,
         date: {
           ...state.initBookingForm.date,
-          ...state.updatedBookingForm.date
-        }
-        
-      }
-    }
+          ...state.updatedBookingForm.date,
+        },
+      };
+    },
+    bookedDates: (state) => {
+      return state.singleRoom.booking.map((date) => {
+        return {
+          dates: new Date(date.date),
+          highlight: {
+            contentStyle: {
+              color: '#000000',
+            },
+          },
+        };
+      });
+    },
   },
   modules: {},
 });

@@ -87,11 +87,13 @@
       </div>
       <div class="room-reservation">
         <Calendar
-          v-model="date"
           :available-dates="{ start: new Date(), end: null }"
+          :attributes="bookedDates"
         />
         <div class="booking">
           <button @click="bookingDialogVisible = true">預約時段</button>
+          <!-- 開發用，方便刪除測試預約 -->
+          <!-- <button @click="$store.dispatch('deleteBooking')">刪除所有預約</button> -->
         </div>
       </div>
     </div>
@@ -105,23 +107,48 @@
           <div class="name">
             <label for="name">
               <span class="field-title">姓名</span>
-              <input type="text" id="name">
+              <input
+                type="text"
+                id="name"
+                :value="updatedBookingForm.name"
+                @input="
+                  $store.commit('UPDATE_BOOKING_FORM', {
+                    ...updatedBookingForm,
+                    name: $event.target.value,
+                  })
+                "
+              />
             </label>
           </div>
           <div class="telephone">
             <label for="telephone">
               <span class="field-title">電話</span>
-              <input type="tel" id="telephone">
+              <input
+                type="tel"
+                id="telephone"
+                :value="updatedBookingForm.phone"
+                @input="
+                  $store.commit('UPDATE_BOOKING_FORM', {
+                    ...updatedBookingForm,
+                    phone: $event.target.value,
+                  })
+                "
+              />
             </label>
           </div>
           <div class="date">
             <span class="field-title">預約起迄</span>
-            <DatePicker 
-              class="start-date" 
+            <DatePicker
+              class="start-date"
               :value="updatedBookingForm.date.start"
-              @input="$store.commit('UPDATE_BOOKING_FORM', { start: $event })"
+              @input="
+                $store.commit('UPDATE_BOOKING_FORM', {
+                  ...updatedBookingForm,
+                  date: { start: $event },
+                })
+              "
               :available-dates="{ start: new Date(), end: null }"
-              >
+            >
               <template v-slot="{ inputValue, togglePopover }">
                 <div>
                   <input
@@ -133,12 +160,17 @@
               </template>
             </DatePicker>
             <span class="separate">~</span>
-            <DatePicker 
-              class="end-date" 
+            <DatePicker
+              class="end-date"
               :value="updatedBookingForm.date.end"
-              @input="$store.commit('UPDATE_BOOKING_FORM', { end: $event })"
+              @input="
+                $store.commit('UPDATE_BOOKING_FORM', {
+                  ...updatedBookingForm,
+                  date: { end: $event },
+                })
+              "
               :available-dates="{ start: updatedBookingForm.date.start }"
-              >
+            >
               <template v-slot="{ inputValue, togglePopover }">
                 <div>
                   <input
@@ -154,16 +186,16 @@
             <div class="container">
               <div class="normal">
                 <span>平日時段</span>
-                <span>1夜</span>
+                <span>{{ userBookingNormaldays }}夜</span>
               </div>
               <div class="holiday">
                 <span>假日時段</span>
-                <span>1夜</span>
+                <span>{{ userBookingHolidays }}夜</span>
               </div>
             </div>
             <div class="total-price">
               <span> = </span>
-              <span>NT.2850</span>
+              <span>NT.{{ userBookingTotalPrice }}</span>
             </div>
           </div>
         </form>
@@ -171,7 +203,7 @@
       <template v-slot:footer>
         <div class="buttons-block">
           <button class="cancel" @click="cancelBooking">取消</button>
-          <button class="confirm">確定預約</button>
+          <button class="confirm" @click="sendUserBooking">確定預約</button>
         </div>
       </template>
     </Dialog>
@@ -185,7 +217,7 @@ import Carousel from "@/components/Carousel.vue";
 import Loading from "@/components/Loading.vue";
 import Dialog from "@/components/Dialog.vue";
 import Calendar from "v-calendar/lib/components/calendar.umd";
-import DatePicker from 'v-calendar/lib/components/date-picker.umd'
+import DatePicker from "v-calendar/lib/components/date-picker.umd";
 
 export default {
   name: "singleRoom",
@@ -195,13 +227,23 @@ export default {
     Loading,
     Calendar,
     DatePicker,
-    Dialog
+    Dialog,
   },
   data() {
     return {
       toggler: false,
       bookingDialogVisible: false,
       date: new Date(),
+      attributes: [
+        {
+          highlight: true,
+          dates: new Date(),
+        },
+        {
+          highlight: true,
+          dates: new Date(new Date().getTime() + 86400000),
+        },
+      ],
     };
   },
   computed: {
@@ -211,8 +253,42 @@ export default {
       "singeRoomLightboxPhotos",
       "room",
       "utilites",
-      "updatedBookingForm"
+      "updatedBookingForm",
+      "bookedDates",
     ]),
+    userTotalBookingDays() {
+      if (
+        !this.updatedBookingForm.date ||
+        !this.updatedBookingForm.date.start ||
+        !this.updatedBookingForm.date.end
+      )
+        return 0;
+
+      const { start, end } = this.updatedBookingForm.date;
+      return new Date(end).getDate() - new Date(start).getDate();
+    },
+    userBookingHolidays() {
+      if (
+        !this.updatedBookingForm.date ||
+        !this.updatedBookingForm.date.start ||
+        !this.updatedBookingForm.date.end
+      )
+        return 0;
+
+      const holidays = this.calculateHolidays();
+
+      return holidays;
+    },
+    userBookingNormaldays() {
+      return this.userTotalBookingDays - this.userBookingHolidays;
+    },
+    userBookingTotalPrice() {
+      const normaldaysTotalPrice =
+        this.userBookingNormaldays * this.room.normalDayPrice;
+      const holidaysTotalPrice =
+        this.userBookingHolidays * this.room.holidayPrice;
+      return normaldaysTotalPrice + holidaysTotalPrice;
+    },
   },
   methods: {
     async fetchSingleRoom() {
@@ -247,7 +323,7 @@ export default {
       this.resetBookingForm();
     },
     close() {
-      console.log('close');
+      console.log("close");
       this.closeDialog();
       this.resetBookingForm();
     },
@@ -256,7 +332,63 @@ export default {
     },
     closeDialog() {
       this.bookingDialogVisible = false;
-    }
+    },
+    calculateHolidays() {
+      const { start, end } = this.updatedBookingForm.date;
+      const startDateTimestamp = new Date(start).getTime();
+      const endDateTimestamp = new Date(end).getTime();
+      const ONEDAYTIMESTAMP = 86400000;
+      const periodOfDays = [];
+
+      for (
+        let begin = startDateTimestamp;
+        begin <= endDateTimestamp;
+        begin += ONEDAYTIMESTAMP
+      ) {
+        const day = new Date(begin).getDay();
+        periodOfDays.push(day);
+      }
+
+      return periodOfDays.reduce((acc, day, index, arr) => {
+        if (index + 1 === arr.length) return acc;
+
+        return arr[index] === 6 && arr[index + 1] === 0 ? (acc += 1) : acc;
+      }, 0);
+    },
+    calculatePeriodOfDates() {
+      const { start, end } = this.updatedBookingForm.date;
+      const startDateTimestamp = new Date(start).getTime();
+      const endDateTimestamp = new Date(end).getTime();
+      const ONEDAYTIMESTAMP = 86400000;
+      const periodOfDates = [];
+
+      for (
+        let begin = startDateTimestamp;
+        begin <= endDateTimestamp;
+        begin += ONEDAYTIMESTAMP
+      ) {
+        let date = new Date(begin).getDate();
+        let month = new Date(begin).getMonth() + 1;
+        let year = new Date(begin).getFullYear();
+
+        date = date < 10 ? "0" + date : date;
+        month = month < 10 ? "0" + month : month;
+        year = year < 10 ? "0" + year : year;
+
+        periodOfDates.push(`${year}-${month}-${date}`);
+      }
+
+      return periodOfDates;
+    },
+    sendUserBooking() {
+      const dates = this.calculatePeriodOfDates();
+      this.$store.dispatch("sendUserBooking", {
+        ...this.updatedBookingForm,
+        id: this.$route.params.id,
+        tel: this.updatedBookingForm.phone,
+        date: dates,
+      });
+    },
   },
   created() {
     this.fetchSingleRoom();
@@ -578,14 +710,15 @@ export default {
   }
 }
 
-
 ::v-deep .dialog-body {
   padding: 0;
 }
 
 ::v-deep .booking-form {
   margin-bottom: 20px;
-  .name, .telephone, .date {
+  .name,
+  .telephone,
+  .date {
     padding: 0 40px;
     span {
       font-size: 14px;
@@ -593,7 +726,8 @@ export default {
     }
   }
 
-  .name, .telephone {
+  .name,
+  .telephone {
     padding-bottom: 15px;
     .field-title {
       margin-right: 63px;
@@ -610,9 +744,9 @@ export default {
     display: block;
     width: 100%;
   }
-  
+
   input {
-    border: 1px solid #C9C9C9;
+    border: 1px solid #c9c9c9;
     border-radius: 5px;
     height: 32px;
     min-width: calc(100% - 96px);
@@ -620,7 +754,8 @@ export default {
   }
 
   .date {
-    .start-date, .end-date {
+    .start-date,
+    .end-date {
       display: inline-block;
       width: 106px;
     }
@@ -633,19 +768,20 @@ export default {
       text-align: center;
     }
   }
-  
+
   .booking-price {
     margin-top: 30px;
     position: relative;
 
     .container {
-      background: #EDEDED;
-      color: #6D7278;
-      font-size: 12px;  
+      background: #ededed;
+      color: #6d7278;
+      font-size: 12px;
       padding: 15px 42px;
       font-weight: 600;
 
-      .normal, .holiday {
+      .normal,
+      .holiday {
         display: flex;
         justify-content: space-between;
       }
@@ -654,12 +790,12 @@ export default {
         margin-bottom: 10px;
       }
     }
-    
+
     .total-price {
       padding: 10px 42px;
       text-align: right;
       font-size: 26px;
-      color: #FF5C5C;
+      color: #ff5c5c;
       font-weight: 600;
 
       span {
@@ -678,9 +814,9 @@ export default {
   .cancel {
     width: 78px;
     height: 37px;
-    background: #D8D8D8;
-    color: #6D7278;
-    transition: background .3s;
+    background: #d8d8d8;
+    color: #6d7278;
+    transition: background 0.3s;
 
     &:hover {
       background: #eeeeee;
@@ -692,11 +828,37 @@ export default {
     height: 37px;
     background: #484848;
     color: #ffffff;
-    transition: background .3s;
+    transition: background 0.3s;
 
     &:hover {
       background: #000000;
     }
   }
 }
+
+::v-deep .vc-highlights {
+  background: repeating-linear-gradient(
+    45deg,
+    #575757,
+    #575757 2px,
+    #F7F7F7 2px,
+    #F7F7F7 6px
+  );
+  .vc-highlight {
+    background: transparent !important;
+  }
+}
+
+::v-deep .vc-day-content:focus,
+::v-deep .vc-day-content:hover {
+  background: transparent !important;
+  font-weight: normal;
+}
+
+::v-deep .is-today {
+  background: #575757 !important;
+  color: #ffffff;
+  font-weight: bold;
+}
+
 </style>

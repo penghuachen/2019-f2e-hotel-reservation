@@ -6,6 +6,10 @@ function resolve(dir) {
 
 module.exports = {
   chainWebpack: (config) => {
+    publicPath: process.env.NODE_ENV === 'production'
+      ? '/f2e-hotel-reservation/'
+      : '/',
+
     // svgIcon settings
     config.module.rule("svg").exclude.add(resolve("src/assets/icons")).end();
     config.module

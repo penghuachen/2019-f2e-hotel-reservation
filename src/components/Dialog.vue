@@ -40,6 +40,7 @@ export default {
   left: 0;
   bottom: 0;
   height: 100%;
+  z-index: 1;
 }
 
 .cover {
@@ -60,22 +61,36 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 420px;
+  max-width: 320px;
   background: #ffffff;
+
+  @media (min-width: 576px) {
+    max-width: unset;
+  }
 
   &-header {
     margin-bottom: 30px;
-    padding: 25px 40px 0;
+    padding: 15px 20px 0;
     h3 {
       font-size: 24px;
+    }
+    @media (min-width: 576px) {
+      padding: 25px 40px 0;
     }
   }
 
   &-body {
-    padding: 0 40px;
+    padding: 0 20px 40px;
+    @media (min-width: 576px) {
+      padding: 0 40px 40px;
+    }
   }
 
   &-footer {
-    padding: 0 40px 25px;
+    padding: 0 20px 15px;
+    @media (min-width: 576px) {
+      padding: 0 40px 25px;
+    }
   }
 }
 

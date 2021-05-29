@@ -97,7 +97,7 @@
         </div>
       </div>
     </div>
-    <Dialog :dialogVisible="bookingDialogVisible" :close="close">
+    <Dialog class="booking-dialog" :dialogVisible="bookingDialogVisible" :close="close">
       <template v-slot:header>
         <h3>預約時段</h3>
         <p>\ \ \</p>
@@ -207,6 +207,34 @@
         </div>
       </template>
     </Dialog>
+    <Dialog class="fail-dialog" :dialogVisible="failDialogVisible" :close="close">
+      <template v-slot:header>
+        <h3>預約失敗</h3>
+        <p>\ \ \</p>
+      </template>
+      <template v-slot:body>
+        <p>{{ errorMessage }}</p>
+      </template>
+      <template v-slot:footer>
+        <div class="buttons-block">
+          <button class="cancel" @click="cancelBooking">返回</button>
+        </div>
+      </template>
+    </Dialog>
+    <Dialog class="success-dialog" :dialogVisible="successDialogVisible" :close="close">
+      <template v-slot:header>
+        <h3>預約成功</h3>
+        <p>\ \ \</p>
+      </template>
+      <template v-slot:body>
+        <p><img src="@/assets/images/success.svg" alt="success"></p>
+      </template>
+      <template v-slot:footer>
+        <div class="buttons-block">
+          <button class="cancel" @click="$router.push({ name: 'Home' })">回頁面</button>
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -244,6 +272,8 @@ export default {
           dates: new Date(new Date().getTime() + 86400000),
         },
       ],
+      failDialogVisible: false,
+      successDialogVisible: false
     };
   },
   computed: {
@@ -255,6 +285,8 @@ export default {
       "utilites",
       "updatedBookingForm",
       "bookedDates",
+      "errorMessage",
+      "successMessage"
     ]),
     userTotalBookingDays() {
       if (
@@ -332,6 +364,10 @@ export default {
     },
     closeDialog() {
       this.bookingDialogVisible = false;
+      this.failDialogVisible = false;
+      this.successDialogVisible = false;
+      this.$store.commit("UPADTE_ERROR_MESSAGE", "");
+      this.$store.commit("UPADTE_SUCCESS_MESSAGE", "");
     },
     calculateHolidays() {
       const { start, end } = this.updatedBookingForm.date;
@@ -380,14 +416,24 @@ export default {
 
       return periodOfDates;
     },
-    sendUserBooking() {
+    async sendUserBooking() {
       const dates = this.calculatePeriodOfDates();
-      this.$store.dispatch("sendUserBooking", {
+      await this.$store.dispatch("sendUserBooking", {
         ...this.updatedBookingForm,
         id: this.$route.params.id,
         tel: this.updatedBookingForm.phone,
         date: dates,
       });
+    },
+  },
+  watch: {
+    errorMessage(value) {
+      if (!value) return;
+      this.failDialogVisible = true;
+    },
+    successMessage(value) {
+      if (!value) return;
+      this.successDialogVisible = true;
     },
   },
   created() {
@@ -710,155 +756,207 @@ export default {
   }
 }
 
-::v-deep .dialog-body {
-  padding: 0;
-}
-
-::v-deep .booking-form {
-  margin-bottom: 20px;
-  .name,
-  .telephone,
-  .date {
-    padding: 0 40px;
-    span {
-      font-size: 14px;
-      font-weight: 600;
-    }
+::v-deep .booking-dialog {
+  .dialog-body {
+    padding: 0;
   }
 
-  .name,
-  .telephone {
-    padding-bottom: 15px;
-    .field-title {
-      margin-right: 63px;
-    }
-  }
-
-  .date {
-    .field-title {
-      margin-right: 31px;
-    }
-  }
-
-  label {
-    display: block;
-    width: 100%;
-  }
-
-  input {
-    border: 1px solid #c9c9c9;
-    border-radius: 5px;
-    height: 32px;
-    min-width: calc(100% - 96px);
-    padding: 5px 10px;
-  }
-
-  .date {
-    .start-date,
-    .end-date {
-      display: inline-block;
-      width: 106px;
-    }
-    .separate {
-      margin: 0 10px;
-    }
-    input {
-      width: 100%;
-      min-width: unset;
-      text-align: center;
-    }
-  }
-
-  .booking-price {
-    margin-top: 30px;
-    position: relative;
-
-    .container {
-      background: #ededed;
-      color: #6d7278;
-      font-size: 12px;
-      padding: 15px 42px;
-      font-weight: 600;
-
-      .normal,
-      .holiday {
-        display: flex;
-        justify-content: space-between;
+  .booking-form {
+    margin-bottom: 20px;
+    .name,
+    .telephone,
+    .date {
+      padding: 0 20px;
+      @media (min-width: 576px) {
+        padding: 0 40px;
       }
-
-      .normal {
-        margin-bottom: 10px;
-      }
-    }
-
-    .total-price {
-      padding: 10px 42px;
-      text-align: right;
-      font-size: 26px;
-      color: #ff5c5c;
-      font-weight: 600;
-
       span {
-        &:first-child {
-          margin-right: 25px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+    }
+
+    .name,
+    .telephone {
+      padding-bottom: 15px;
+      display: block;
+      .field-title {
+        margin-right: 63px;
+      }
+    }
+
+    label {
+      display: block;
+      width: 100%;
+    }
+
+    input {
+      border: 1px solid #c9c9c9;
+      border-radius: 5px;
+      height: 32px;
+      min-width: calc(100% - 96px);
+      padding: 5px 10px;
+      width: 100%;
+      font-size: 16px;
+      @media (min-width: 576px) {
+        width: auto;
+      }
+    }
+
+    .date {
+      .field-title {
+        margin-right: 31px;
+        display: block;
+        @media (min-width: 576px) {
+          display: inline-block;
+        }
+      }
+
+      .start-date,
+      .end-date {
+        display: inline-block;
+        width: 126px;
+        @media (min-width: 576px) {
+          width: 106px;
+        }
+      }
+      .separate {
+        margin: 0 8px;
+        @media (min-width: 576px) {
+          margin: 0 10px;
+        }
+      }
+      input {
+        width: 100%;
+        min-width: unset;
+        text-align: center;
+        font-size: 16px;
+      }
+    }
+
+    .booking-price {
+      margin-top: 30px;
+      position: relative;
+
+      .container {
+        background: #ededed;
+        color: #6d7278;
+        font-size: 12px;
+        padding: 15px 42px;
+        font-weight: 600;
+
+        .normal,
+        .holiday {
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .normal {
+          margin-bottom: 10px;
+        }
+      }
+
+      .total-price {
+        padding: 10px 42px;
+        text-align: right;
+        font-size: 26px;
+        color: #ff5c5c;
+        font-weight: 600;
+
+        span {
+          &:first-child {
+            margin-right: 25px;
+          }
         }
       }
     }
   }
-}
 
-::v-deep .buttons-block {
-  display: flex;
-  justify-content: space-between;
+  .buttons-block {
+    display: flex;
+    justify-content: space-between;
 
-  .cancel {
-    width: 78px;
-    height: 37px;
-    background: #d8d8d8;
-    color: #6d7278;
-    transition: background 0.3s;
+    .cancel {
+      width: 78px;
+      height: 37px;
+      background: #d8d8d8;
+      color: #6d7278;
+      transition: background 0.3s;
 
-    &:hover {
-      background: #eeeeee;
+      &:hover {
+        background: #eeeeee;
+      }
+    }
+
+    .confirm {
+      width: 107px;
+      height: 37px;
+      background: #484848;
+      color: #ffffff;
+      transition: background 0.3s;
+
+      &:hover {
+        background: #000000;
+      }
     }
   }
 
-  .confirm {
-    width: 107px;
-    height: 37px;
-    background: #484848;
-    color: #ffffff;
-    transition: background 0.3s;
-
-    &:hover {
-      background: #000000;
-    }
-  }
 }
 
-::v-deep .vc-highlights {
-  background: repeating-linear-gradient(
-    45deg,
-    #575757,
-    #575757 2px,
-    #F7F7F7 2px,
-    #F7F7F7 6px
-  );
-  .vc-highlight {
+::v-deep .room-reservation {
+  .vc-highlights {
+    background: repeating-linear-gradient(
+      45deg,
+      #575757,
+      #575757 2px,
+      #F7F7F7 2px,
+      #F7F7F7 6px
+    );
+    .vc-highlight {
+      background: transparent !important;
+    }
+  }
+
+  .vc-day-content:focus,
+  .vc-day-content:hover {
     background: transparent !important;
+    font-weight: normal;
+  }
+
+  .is-today {
+    background: #575757 !important;
+    color: #ffffff;
+    font-weight: bold;
   }
 }
 
-::v-deep .vc-day-content:focus,
-::v-deep .vc-day-content:hover {
-  background: transparent !important;
-  font-weight: normal;
+
+::v-deep .fail-dialog, ::v-deep .success-dialog{
+  .buttons-block {
+    display: flex;
+    justify-content: flex-end;
+    button {
+      align-self: flex-end;
+      width: 107px;
+      height: 37px;
+      background: #484848;
+      color: #ffffff;
+      transition: background 0.3s;
+
+      &:hover {
+        background: #000000;
+      }
+    }
+  }
 }
 
-::v-deep .is-today {
-  background: #575757 !important;
-  color: #ffffff;
-  font-weight: bold;
+::v-deep .success-dialog {
+  .dialog-body {
+    text-align: center;
+    img {
+      width: 60px;
+    }
+  }
 }
 
 </style>

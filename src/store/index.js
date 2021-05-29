@@ -99,6 +99,8 @@ export default new Vuex.Store({
       },
     },
     updatedBookingForm: {},
+    errorMessage: "",
+    successMessage: ""
   },
   mutations: {
     ROOMS(state, rooms) {
@@ -127,6 +129,12 @@ export default new Vuex.Store({
         ...resetData,
       };
     },
+    UPADTE_ERROR_MESSAGE(state, message) {
+      state.errorMessage = message;
+    },
+    UPADTE_SUCCESS_MESSAGE(state, message) {
+      state.successMessage = message;
+    }
   },
   actions: {
     async fetchRooms({ commit }) {
@@ -135,26 +143,20 @@ export default new Vuex.Store({
     },
     async fetchSingleRoom({ commit }, { id }) {
       const { data } = await api.get(`/room/${id}`);
-      console.log("Output ---------------------------------------");
-      console.log("Output -> fetchSingleRoom -> data", data);
-      console.log("Output ---------------------------------------");
       commit("SINGLE_ROOM", data);
     },
     async sendUserBooking({ commit }, form) {
-      console.log("Output -------------------------------------------");
-      console.log("Output -> sendUserBooking -> commit", commit);
-      console.log("Output -------------------------------------------");
-      const { data } = await api.post(`/room/${form.id}`, {
-        ...form,
-      });
-      console.log("Output ---------------------------------------");
-      console.log("Output -> sendUserBooking -> data", data);
-      console.log("Output ---------------------------------------");
+      try {
+        await api.post(`/room/${form.id}`, {
+          ...form,
+        });
+        commit("UPADTE_SUCCESS_MESSAGE", "成功")
+      } catch (error) {
+        console.log('error', error);
+        commit("UPADTE_ERROR_MESSAGE", error)
+      }
     },
-    async deleteBooking({ commit }) {
-      console.log("Output -----------------------------------------");
-      console.log("Output -> deleteBooking -> commit", commit);
-      console.log("Output -----------------------------------------");
+    async deleteBooking() {
       await api.delete("/rooms");
     },
   },
@@ -224,6 +226,8 @@ export default new Vuex.Store({
         };
       });
     },
+    errorMessage: state => state.errorMessage,
+    successMessage: state => state.successMessage,
   },
   modules: {},
 });

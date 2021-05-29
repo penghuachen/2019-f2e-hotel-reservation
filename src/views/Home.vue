@@ -188,6 +188,7 @@ export default {
       }
 
       li {
+        white-space: nowrap;
         margin-bottom: 15px;
         &:last-child {
           margin-bottom: 0;

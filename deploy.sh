@@ -14,7 +14,7 @@ git add -A
 git commit -m 'deploy'
 
 
-# 部署到 https://penghuachen.github.io/F2EWeek6
+# 部署到 https://penghuachen.github.io/f2e-hotel-reservation
 git push -f git@github.com:penghuachen/f2e-hotel-reservation.git main:gh-pages
 
 cd -

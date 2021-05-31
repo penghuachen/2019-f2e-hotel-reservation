@@ -16,7 +16,7 @@
           :key="index"
           class="photo"
           :class="[index === 0 ? 'main-photo' : 'sub-photo']"
-          @click="productIndex = (index + 1)"
+          @click="productIndex = index + 1"
         >
           <img :src="imageUrl" />
         </div>
@@ -24,11 +24,11 @@
       <div class="carousel" @click.prevent="toggler = !toggler">
         <Carousel :images="singeRoomCarouselPhotos" />
       </div>
-      <FsLightbox 
-        :toggler="toggler" 
-        :sources="singeRoomLightboxPhotos" 
-        :slide="productIndex" 
-        :key="productIndex" 
+      <FsLightbox
+        :toggler="toggler"
+        :sources="singeRoomLightboxPhotos"
+        :slide="productIndex"
+        :key="productIndex"
       />
     </div>
     <div class="each-room-details">
@@ -103,7 +103,11 @@
         </div>
       </div>
     </div>
-    <Dialog class="booking-dialog" :dialogVisible="bookingDialogVisible" :close="close">
+    <Dialog
+      class="booking-dialog"
+      :dialogVisible="bookingDialogVisible"
+      :close="close"
+    >
       <template v-slot:header>
         <h3>預約時段</h3>
         <p>\ \ \</p>
@@ -213,7 +217,11 @@
         </div>
       </template>
     </Dialog>
-    <Dialog class="fail-dialog" :dialogVisible="failDialogVisible" :close="close">
+    <Dialog
+      class="fail-dialog"
+      :dialogVisible="failDialogVisible"
+      :close="close"
+    >
       <template v-slot:header>
         <h3>預約失敗</h3>
         <p>\ \ \</p>
@@ -227,17 +235,23 @@
         </div>
       </template>
     </Dialog>
-    <Dialog class="success-dialog" :dialogVisible="successDialogVisible" :close="close">
+    <Dialog
+      class="success-dialog"
+      :dialogVisible="successDialogVisible"
+      :close="close"
+    >
       <template v-slot:header>
         <h3>預約成功</h3>
         <p>\ \ \</p>
       </template>
       <template v-slot:body>
-        <p><img src="@/assets/images/success.svg" alt="success"></p>
+        <p><img src="@/assets/images/success.svg" alt="success" /></p>
       </template>
       <template v-slot:footer>
         <div class="buttons-block">
-          <button class="cancel" @click="$router.push({ name: 'Home' })">回頁面</button>
+          <button class="cancel" @click="$router.push({ name: 'Home' })">
+            回頁面
+          </button>
         </div>
       </template>
     </Dialog>
@@ -280,7 +294,7 @@ export default {
         },
       ],
       failDialogVisible: false,
-      successDialogVisible: false
+      successDialogVisible: false,
     };
   },
   computed: {
@@ -293,7 +307,7 @@ export default {
       "updatedBookingForm",
       "bookedDates",
       "errorMessage",
-      "successMessage"
+      "successMessage",
     ]),
     userTotalBookingDays() {
       if (
@@ -911,7 +925,6 @@ export default {
       }
     }
   }
-
 }
 
 ::v-deep .room-reservation {
@@ -920,8 +933,8 @@ export default {
       45deg,
       #575757,
       #575757 2px,
-      #F7F7F7 2px,
-      #F7F7F7 6px
+      #f7f7f7 2px,
+      #f7f7f7 6px
     );
     .vc-highlight {
       background: transparent !important;
@@ -945,8 +958,8 @@ export default {
   }
 }
 
-
-::v-deep .fail-dialog, ::v-deep .success-dialog{
+::v-deep .fail-dialog,
+::v-deep .success-dialog {
   .buttons-block {
     display: flex;
     justify-content: flex-end;
@@ -973,5 +986,4 @@ export default {
     }
   }
 }
-
 </style>

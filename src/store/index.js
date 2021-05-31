@@ -100,7 +100,7 @@ export default new Vuex.Store({
     },
     updatedBookingForm: {},
     errorMessage: "",
-    successMessage: ""
+    successMessage: "",
   },
   mutations: {
     ROOMS(state, rooms) {
@@ -134,7 +134,7 @@ export default new Vuex.Store({
     },
     UPADTE_SUCCESS_MESSAGE(state, message) {
       state.successMessage = message;
-    }
+    },
   },
   actions: {
     async fetchRooms({ commit }) {
@@ -150,10 +150,10 @@ export default new Vuex.Store({
         await api.post(`/room/${form.id}`, {
           ...form,
         });
-        commit("UPADTE_SUCCESS_MESSAGE", "成功")
+        commit("UPADTE_SUCCESS_MESSAGE", "成功");
       } catch (error) {
-        console.log('error', error);
-        commit("UPADTE_ERROR_MESSAGE", error)
+        console.log("error", error);
+        commit("UPADTE_ERROR_MESSAGE", error);
       }
     },
     async deleteBooking() {
@@ -221,14 +221,14 @@ export default new Vuex.Store({
           dates: new Date(date.date),
           highlight: {
             contentStyle: {
-              color: '#000000',
+              color: "#000000",
             },
           },
         };
       });
     },
-    errorMessage: state => state.errorMessage,
-    successMessage: state => state.successMessage,
+    errorMessage: (state) => state.errorMessage,
+    successMessage: (state) => state.successMessage,
   },
   modules: {},
 });

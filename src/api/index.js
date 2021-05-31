@@ -11,22 +11,27 @@ const instance = axios.create({
   },
 });
 
-instance.interceptors.request.use(function (config) {
-  return config;
-}, function (error) {
-  return Promise.reject(error);
-});
-
-instance.interceptors.response.use(function (response) {
-  return response;
-}, function (error) {
-  switch (error.response.status) {
-    case 400:
-      return Promise.reject(error.response.data.message);
-    default:
-      break;
+instance.interceptors.request.use(
+  function (config) {
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
   }
-});
+);
 
+instance.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (error) {
+    switch (error.response.status) {
+      case 400:
+        return Promise.reject(error.response.data.message);
+      default:
+        break;
+    }
+  }
+);
 
 export default instance;

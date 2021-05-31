@@ -6,7 +6,7 @@ import store from "./store";
 Vue.config.productionTip = false;
 
 // reset css
-import "@/assets/scss/reset.scss";
+import "@/assets/scss/_reset.scss";
 
 import "@/assets/icons/index.js";
 import SvgIcon from "@/components/SvgIcon";

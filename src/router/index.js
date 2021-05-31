@@ -22,8 +22,8 @@ const routes = [
 
 const router = new VueRouter({
   base: process.env.BASE_URL,
-  scrollBehavior () {
-    return { x: 0, y: 0 }
+  scrollBehavior() {
+    return { x: 0, y: 0 };
   },
   routes,
 });

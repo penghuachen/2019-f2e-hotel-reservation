@@ -16,6 +16,7 @@
           :key="index"
           class="photo"
           :class="[index === 0 ? 'main-photo' : 'sub-photo']"
+          @click="productIndex = (index + 1)"
         >
           <img :src="imageUrl" />
         </div>
@@ -23,7 +24,12 @@
       <div class="carousel" @click.prevent="toggler = !toggler">
         <Carousel :images="singeRoomCarouselPhotos" />
       </div>
-      <FsLightbox :toggler="toggler" :sources="singeRoomLightboxPhotos" />
+      <FsLightbox 
+        :toggler="toggler" 
+        :sources="singeRoomLightboxPhotos" 
+        :slide="productIndex" 
+        :key="productIndex" 
+      />
     </div>
     <div class="each-room-details">
       <div class="introduction">
@@ -260,6 +266,7 @@ export default {
   data() {
     return {
       toggler: false,
+      productIndex: 0,
       bookingDialogVisible: false,
       date: new Date(),
       attributes: [
@@ -498,6 +505,10 @@ export default {
       float: right;
       width: 40%;
       height: 300px;
+    }
+
+    img {
+      object-fit: cover;
     }
   }
 

@@ -167,7 +167,8 @@ export default new Vuex.Store({
       return state.singleRoom.room.length && state.singleRoom.room[0];
     },
     singeRoomLightboxPhotos: (state) => {
-      return state.singleRoom.room[0] && state.singleRoom.room[0].imageUrl;
+      if (!state.singleRoom.room[0]) return [];
+      return state.singleRoom.room[0].imageUrl;
     },
     singeRoomCarouselPhotos: (state) => {
       return (

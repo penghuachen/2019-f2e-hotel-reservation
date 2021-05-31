@@ -939,6 +939,10 @@ export default {
     color: #ffffff;
     font-weight: bold;
   }
+
+  .is-not-in-month {
+    background: transparent !important;
+  }
 }
 
 

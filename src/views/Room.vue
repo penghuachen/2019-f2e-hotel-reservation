@@ -22,7 +22,10 @@
         </div>
       </div>
       <div class="carousel" @click.prevent="toggler = !toggler">
-        <Carousel :images="singeRoomCarouselPhotos" />
+        <Carousel
+          :images="singeRoomCarouselPhotos"
+          :productIndex.sync="productIndex"
+        />
       </div>
       <FsLightbox
         :toggler="toggler"

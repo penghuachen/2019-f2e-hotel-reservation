@@ -4,7 +4,12 @@
     <!-- Additional required wrapper -->
     <div class="swiper-wrapper">
       <!-- Slides -->
-      <div class="swiper-slide" v-for="image in images" :key="image.id">
+      <div
+        class="swiper-slide"
+        v-for="(image, index) in images"
+        :key="image.id"
+        @click="$emit('update:productIndex', index + 1)"
+      >
         <img :src="image.imageUrl" />
       </div>
     </div>
@@ -17,6 +22,9 @@ export default {
   props: {
     images: {
       type: Array,
+    },
+    productIndex: {
+      type: Number,
     },
   },
   watch: {

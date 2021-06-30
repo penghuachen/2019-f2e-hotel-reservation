@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/penghuachen/2019-f2e-hotel-reservation">
-    <img src="https://i.imgur.com/Jgo5xqE.jpg" alt="Logo" >
+    <img width="50%" src="https://i.imgur.com/1KpPTxu.jpg" alt="Logo" >
   </a>
 
   <h3 align="center">旅館預約服務</h3>
